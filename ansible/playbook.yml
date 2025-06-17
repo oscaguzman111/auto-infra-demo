@@ -1,0 +1,24 @@
+- name: Instalar Apache en Ubuntu
+  hosts: web
+  become: true
+
+  tasks:
+    - name: Actualizar apt
+      apt:
+        update_cache: yes
+
+    - name: Instalar Apache2
+      apt:
+        name: apache2
+        state: present
+
+    - name: Crear página de prueba
+      copy:
+        dest: /var/www/html/index.html
+        content: "¡Hola desde Ansible + GitHub Actions!"
+
+    - name: Asegurar que Apache está activo
+      service:
+        name: apache2
+        state: started
+        enabled: yes
