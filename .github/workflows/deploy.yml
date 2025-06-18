@@ -18,6 +18,16 @@ jobs:
           sudo apt update
           sudo apt install -y ansible sshpass
 
+      - name: Validar que el inventario existe
+        run: test -f ansible/inventory.ini
+
+      - name: Validar sintaxis del playbook
+        run: ansible-playbook --syntax-check -i ansible/inventory.ini ansible/playbook.yml
+
       - name: Ejecutar playbook
+        run: ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
+
+      - name: Verificar que Apache est\u00e1 en ejecuci\u00f3n
         run: |
-          ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
+          ansible web -i ansible/inventory.ini -a "systemctl is-active apache2" | grep active
+
