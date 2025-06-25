@@ -1,33 +1,37 @@
-name: Deploy con Ansible desde runner local
+name: Deploy Infraestructura y App Flask
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Clonar repositorio
-        uses: actions/checkout@v4
+    - name: Checkout repositorio
+      uses: actions/checkout@v3
 
-      - name: Instalar dependencias
-        run: |
-          sudo apt update
-          sudo apt install -y ansible sshpass
+    - name: Instalar Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.5.7
 
-      - name: Validar que el inventario existe
-        run: test -f ansible/inventory.ini
+    - name: Configurar credenciales AWS
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        echo "AWS configurado"
 
-      - name: Validar sintaxis del playbook
-        run: ansible-playbook --syntax-check -i ansible/inventory.ini ansible/playbook.yml
+    - name: Inicializar Terraform
+      working-directory: ./terraform
+      run: terraform init
 
-      - name: Ejecutar playbook
-        run: ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
-
-      - name: Verificar que Apache est\u00e1 en ejecuci\u00f3n
-        run: |
-          ansible web -i ansible/inventory.ini -a "systemctl is-active apache2" | grep active
+    - name: Aplicar Terraform
+      working-directory: ./terraform
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: terraform apply -auto-approve
 
