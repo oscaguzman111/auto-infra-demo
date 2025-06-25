@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h2>IP Pública: {{ ip }}</h2>
+    <form action="/calc" method="post">
+      <input name="op1" placeholder="Número 1">
+      <select name="operation">
+        <option>+</option><option>-</option><option>*</option><option>/</option>
+      </select>
+      <input name="op2" placeholder="Número 2">
+      <button type="submit">Calcular</button>
+    </form>
+  </body>
+</html>

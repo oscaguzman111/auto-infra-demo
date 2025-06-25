@@ -1,24 +1,30 @@
-- name: Instalar Apache en Ubuntu
+---
+- name: Preparar e instalar Apache en EC2
   hosts: web
   become: true
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
 
   tasks:
-    - name: Actualizar apt
+    - name: Actualizar la caché de apt
       apt:
         update_cache: yes
 
-    - name: Instalar Apache2
+    - name: Asegurar que 'six' está instalado
+      apt:
+        name: python3-six
+        state: present
+
+    - name: Instalar Apache
       apt:
         name: apache2
         state: present
 
-    - name: Crear página de prueba
-      copy:
-        dest: /var/www/html/index.html
-        content: "¡Hola desde Ansible + GitHub Actions!"
-
-    - name: Asegurar que Apache está activo
+    - name: Habilitar y arrancar Apache
       service:
         name: apache2
+        enabled: true
         state: started
-        enabled: yes
+
