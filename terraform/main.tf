@@ -18,8 +18,8 @@ resource "aws_security_group" "allow_http_ssh" {
   }
 
   ingress {
-    from_port   = 5000
-    to_port     = 5000
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -32,8 +32,8 @@ resource "aws_security_group" "allow_http_ssh" {
   }
 }
 
-resource "aws_instance" "web" {
-  count                  = 4
+resource "aws_instance" "oscar-demo" {
+  count                  = 1
   ami                    = "ami-0fc5d935ebf8bc3bc"
   instance_type          = "t2.micro"
   key_name               = aws_key_pair.deployer.key_name
@@ -41,7 +41,7 @@ resource "aws_instance" "web" {
   user_data              = file("${path.module}/scripts/install_app.sh")
 
   tags = {
-    Name = "web-${count.index + 1}"
+    Name = "oscar-demo-${count.index + 1}"
   }
 }
   
