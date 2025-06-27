@@ -32,7 +32,7 @@ resource "aws_security_group" "allow_http_ssh" {
   }
 }
 
-resource "aws_instance" "oscar-demo" {
+resource "aws_instance" "oscardemo" {
   count                  = 1
   ami                    = "ami-0fc5d935ebf8bc3bc"
   instance_type          = "t2.micro"
@@ -41,7 +41,7 @@ resource "aws_instance" "oscar-demo" {
   user_data              = file("${path.module}/scripts/install_app.sh")
 
   tags = {
-    Name = "oscar-demo-${count.index + 1}"
+    Name = "oscardemo-${count.index + 1}"
   }
 }
   
