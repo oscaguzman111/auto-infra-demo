@@ -33,7 +33,7 @@ resource "aws_security_group" "allow_http_ssh" {
 }
 
 resource "aws_instance" "web" {
-  count                  = 2
+  count                  = 4
   ami                    = "ami-0fc5d935ebf8bc3bc"
   instance_type          = "t2.micro"
   key_name               = aws_key_pair.deployer.key_name
