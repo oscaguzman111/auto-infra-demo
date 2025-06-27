@@ -1,8 +1,11 @@
 #!/bin/bash
 
 sudo apt update -y
-sudo apt install -y python3-pip
+sudo apt install -y python3-pip libcap2-bin
 pip3 install flask requests
+
+# Permitir a Python usar puertos <1024 como el 80
+sudo setcap 'cap_net_bind_service=+ep' $(which python3)
 
 mkdir -p /home/ubuntu/app/templates
 
@@ -27,7 +30,7 @@ def index():
     return render_template("index.html", ip=ip, result=result)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=80)
 EOF
 
 cat << 'EOF' > /home/ubuntu/app/templates/index.html
